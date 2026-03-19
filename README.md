@@ -41,20 +41,29 @@ It acts as a **security layer between the user and the internet**.
 User Browser
      ↓
 BrowserShield Extension
+ (Monitors URLs, Emails, Downloads)
      ↓
-Flask API Layer
+Flask Backend API (app.py)
+ ├ /analyze-url
+ ├ /analyze-email
+ ├ /analyze-file
      ↓
 Threat Detection Engine
- ├ Heuristic Rules
- ├ Machine Learning Model
- ├ File Analysis + Sandbox
- └ Threat Intelligence (VirusTotal)
+ ├ URL Analysis (Rule-based)
+ ├ Email Analysis (ML + Rules)
+ ├ File Analysis (Extension + Sandbox)
+ ├ Threat Intelligence (VirusTotal - optional)
      ↓
-Threat Score Calculation
+Threat Scoring Engine
+ (Combines Rule Score + ML Score)
      ↓
-SQLite Database (Forensics)
+Decision Engine
+ (Allow / Warn / Block)
      ↓
-Dashboard UI
+SQLite Database (incidents.db)
+ (Stores forensic evidence)
+     ↓
+Dashboard UI (Monitoring & Logs)
 ```
 
 ---
