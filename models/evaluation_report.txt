@@ -1,0 +1,35 @@
+BrowserShield — ML Model Evaluation Report
+==================================================
+
+Dataset:         SpamAssassin
+Total Samples:   5,809
+Phishing:        1,718 (29.6%)
+Safe:            4,091  (70.4%)
+Features:        TF-IDF, 8,000 terms, unigrams+bigrams
+
+Model Comparison:
+--------------------------------------------------
+Model                       Accuracy         F1    ROC-AUC
+Logistic Regression           0.9845     0.9742     0.9954
+Random Forest                 0.9793     0.9652     0.9943
+Linear SVM                    0.9888     0.9812     0.9979 ← SELECTED
+
+Best Model: Linear SVM
+
+Detailed Metrics (Best Model):
+--------------------------------------------------
+Accuracy:            0.9888
+Precision:           0.9769
+Recall:              0.9855
+F1 Score:            0.9812
+ROC-AUC:             0.9979
+False Positive Rate: 0.0098
+False Negative Rate: 0.0145
+
+Confusion Matrix:
+  True Negatives  (safe, correctly passed):   810
+  False Positives (safe, wrongly flagged):     8
+  False Negatives (phishing, missed):          5
+  True Positives  (phishing, correctly caught):339
+
+Cross-Validation (5-fold F1): 0.9516 ± 0.0528

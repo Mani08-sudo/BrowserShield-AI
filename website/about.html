@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — BrowserShield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#060a0f;--bg2:#0a1018;--bg3:#0f1820;--border:#1a2d40;--text:#c8d8e8;--muted:#526878;--accent:#00c8ff;--accent2:#0080cc;--high:#ff3c3c;--medium:#ffaa00;--low:#00e87a;--mono:'Share Tech Mono',monospace;--display:'Barlow Condensed',sans-serif;--body:'Barlow',sans-serif;}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px);pointer-events:none;z-index:1000;}
+
+        nav{position:sticky;top:0;z-index:500;background:rgba(6,10,15,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+        .nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+        .nav-hex{width:36px;height:36px;background:var(--accent);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:16px;flex-shrink:0;animation:hex-pulse 4s ease-in-out infinite;}
+        @keyframes hex-pulse{0%,100%{filter:drop-shadow(0 0 6px var(--accent));}50%{filter:drop-shadow(0 0 18px var(--accent));}}
+        .nav-brand{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--text);}
+        .nav-links{display:flex;align-items:center;gap:4px;list-style:none;}
+        .nav-links a{display:block;padding:8px 16px;font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;border-radius:4px;transition:color 0.2s,background 0.2s;}
+        .nav-links a:hover,.nav-links a.active{color:var(--accent);background:rgba(0,200,255,0.06);}
+        .nav-cta{color:var(--bg) !important;background:var(--accent) !important;padding:8px 20px !important;border-radius:4px !important;}
+
+        .page-header{padding:80px 48px 60px;max-width:1200px;margin:0 auto;border-bottom:1px solid var(--border);}
+        .page-tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;}
+        .page-title{font-family:var(--display);font-size:clamp(48px,6vw,80px);font-weight:800;text-transform:uppercase;letter-spacing:-1px;line-height:0.95;margin-bottom:20px;}
+        .page-desc{font-size:18px;color:var(--muted);font-weight:300;max-width:600px;line-height:1.7;}
+
+        .content{max-width:1200px;margin:0 auto;padding:80px 48px;}
+
+        /* Problem / Solution */
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:80px;}
+        .col-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:36px;}
+        .col-card.problem{border-top:3px solid var(--high);}
+        .col-card.solution{border-top:3px solid var(--low);}
+        .col-tag{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;}
+        .col-card.problem .col-tag{color:var(--high);}
+        .col-card.solution .col-tag{color:var(--low);}
+        .col-title{font-family:var(--display);font-size:28px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+        .col-text{font-size:15px;color:var(--muted);line-height:1.8;}
+        .col-text strong{color:var(--text);}
+
+        /* Tech stack */
+        .section-title{font-family:var(--display);font-size:clamp(32px,4vw,48px);font-weight:800;text-transform:uppercase;letter-spacing:-1px;margin-bottom:12px;}
+        .section-tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;}
+        .section-sub{font-size:16px;color:var(--muted);font-weight:300;max-width:560px;line-height:1.7;margin-bottom:48px;}
+
+        .tech-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:80px;}
+        .tech-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px 20px;text-align:center;transition:border-color 0.2s,transform 0.2s;}
+        .tech-card:hover{border-color:rgba(0,200,255,0.3);transform:translateY(-3px);}
+        .tech-icon{font-size:32px;margin-bottom:12px;}
+        .tech-name{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+        .tech-role{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;}
+
+        /* Research question */
+        .rq-box{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:40px 48px;margin-bottom:80px;}
+        .rq-label{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;}
+        .rq-text{font-family:var(--display);font-size:clamp(20px,2.5vw,28px);font-weight:600;line-height:1.5;color:var(--text);}
+        .rq-answer{margin-top:24px;font-size:15px;color:var(--muted);line-height:1.8;}
+        .rq-answer strong{color:var(--text);}
+
+        /* Scope */
+        .scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:80px;}
+        .scope-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;}
+        .scope-title{font-family:var(--display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+        .scope-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+        .scope-list li{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--muted);line-height:1.5;}
+        .scope-list li::before{content:'';width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+        .scope-card.done .scope-list li::before{background:var(--low);}
+        .scope-card.future .scope-list li::before{background:var(--muted);}
+
+        /* Team / author */
+        .author-section{border-top:1px solid var(--border);padding-top:64px;}
+        .author-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:48px;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;}
+        .author-avatar{width:100px;height:100px;background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:50%;display:grid;place-items:center;font-size:40px;flex-shrink:0;}
+        .author-name{font-family:var(--display);font-size:36px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+        .author-role{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:3px;margin-bottom:16px;}
+        .author-bio{font-size:15px;color:var(--muted);line-height:1.8;max-width:600px;}
+        .author-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;}
+        .author-tag{font-family:var(--mono);font-size:10px;letter-spacing:2px;padding:5px 12px;border-radius:3px;background:rgba(0,200,255,0.06);color:var(--accent);border:1px solid rgba(0,200,255,0.15);}
+
+        footer{border-top:1px solid var(--border);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;}
+        .footer-brand{font-family:var(--display);font-size:18px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+        .footer-links{display:flex;gap:32px;list-style:none;}
+        .footer-links a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--accent);}
+        .footer-copy{font-family:var(--mono);font-size:11px;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">
+        <div class="nav-hex">🛡</div>
+        <span class="nav-brand">BrowserShield</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="download.html" class="nav-cta">Install</a></li>
+    </ul>
+</nav>
+
+<div class="page-header">
+    <div class="page-tag">Project Background</div>
+    <h1 class="page-title">About<br>the Project</h1>
+    <p class="page-desc">BrowserShield is a mini project built to solve a real problem — people get hacked not because security systems fail, but because users trust what they see.</p>
+</div>
+
+<div class="content">
+
+    <!-- Problem / Solution -->
+    <div class="two-col">
+        <div class="col-card problem">
+            <div class="col-tag">The Problem</div>
+            <div class="col-title">Security Reacts Too Late</div>
+            <p class="col-text">
+                Most security tools — antiviruses, firewalls, email filters — react <strong>after</strong> a threat has been encountered. The user has already clicked the link, already downloaded the file, already entered their password.
+                <br><br>
+                Phishing works because the attacker exploits <strong>human trust</strong>, not technical vulnerabilities. A perfectly designed fake PayPal login page looks real. An urgent-sounding email creates panic that bypasses rational thinking.
+                <br><br>
+                No amount of post-incident scanning fixes this.
+            </p>
+        </div>
+        <div class="col-card solution">
+            <div class="col-tag">The Solution</div>
+            <div class="col-title">Intercept Before Interaction</div>
+            <p class="col-text">
+                BrowserShield moves the security checkpoint to <strong>before</strong> the user interacts with a threat. Every URL is analyzed the moment you navigate. Every download is scanned before execution. Every email is checked when you open it.
+                <br><br>
+                The system combines <strong>rule-based detection</strong> for known patterns and <strong>machine learning</strong> for new ones — producing a risk decision in milliseconds, invisibly, without interrupting normal browsing.
+                <br><br>
+                When something is dangerous, the user is warned or the action is blocked.
+            </p>
+        </div>
+    </div>
+
+    <!-- Research Question -->
+    <div class="rq-box">
+        <div class="rq-label">Research Question</div>
+        <div class="rq-text">
+            "Can a lightweight browser-integrated hybrid detection system using rule-based analysis and machine learning provide effective real-time protection against phishing emails, malicious URLs, and dangerous downloads — with acceptable false positive rates?"
+        </div>
+        <div class="rq-answer">
+            This project attempts to answer this question by building the system, measuring its detection performance, and evaluating its real-world usability through a <strong>working Chrome extension</strong> connected to a <strong>Flask backend</strong> with a <strong>trained ML model</strong>.
+        </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="section-tag">Technology Stack</div>
+    <h2 class="section-title">Built With</h2>
+    <p class="section-sub">Every technology chosen for a specific reason — no unnecessary complexity.</p>
+
+    <div class="tech-grid">
+        <div class="tech-card">
+            <div class="tech-icon">🐍</div>
+            <div class="tech-name">Python</div>
+            <div class="tech-role">Backend & ML</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">⚗️</div>
+            <div class="tech-name">Flask</div>
+            <div class="tech-role">REST API Server</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">🤖</div>
+            <div class="tech-name">Scikit-learn</div>
+            <div class="tech-role">ML Model Training</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">🗃️</div>
+            <div class="tech-name">SQLite</div>
+            <div class="tech-role">Forensics Database</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">🧩</div>
+            <div class="tech-name">Chrome API</div>
+            <div class="tech-role">Browser Extension</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">📊</div>
+            <div class="tech-name">TF-IDF</div>
+            <div class="tech-role">Text Vectorization</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">📧</div>
+            <div class="tech-name">SpamAssassin</div>
+            <div class="tech-role">Training Dataset</div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon">🌐</div>
+            <div class="tech-name">JavaScript</div>
+            <div class="tech-role">Extension + UI</div>
+        </div>
+    </div>
+
+    <!-- Scope -->
+    <div class="section-tag">Project Scope</div>
+    <h2 class="section-title">What's In &<br>What's Next</h2>
+    <p class="section-sub" style="margin-bottom:32px;">What was built for this project and what future work would look like.</p>
+
+    <div class="scope-grid">
+        <div class="scope-card done">
+            <div class="scope-title">✅ Implemented</div>
+            <ul class="scope-list">
+                <li>Flask REST API with modular Blueprint architecture</li>
+                <li>URL analysis with 11 detection rules</li>
+                <li>Email phishing detection (ML + rule hybrid)</li>
+                <li>File inspection (30+ extensions, magic bytes)</li>
+                <li>Static sandbox analysis (7-step, no execution)</li>
+                <li>SQLite forensics database with full logging</li>
+                <li>Real-time forensics dashboard</li>
+                <li>Chrome extension (Manifest V3)</li>
+                <li>Gmail and Outlook email scanning</li>
+                <li>Allow/Block download decision popup</li>
+                <li>ML model trained on SpamAssassin dataset</li>
+                <li>Tested in VMware virtual environment</li>
+            </ul>
+        </div>
+        <div class="scope-card future">
+            <div class="scope-title">🔮 Future Work</div>
+            <ul class="scope-list">
+                <li>VirusTotal API integration for real-time hash lookup</li>
+                <li>Dynamic sandbox using isolated VM execution</li>
+                <li>BERT or transformer-based email classification</li>
+                <li>WebSocket real-time dashboard updates</li>
+                <li>Firefox browser extension support</li>
+                <li>User behavior analytics and anomaly detection</li>
+                <li>Threat intelligence feed integration</li>
+                <li>API key authentication for production security</li>
+                <li>Mobile companion app for alerts</li>
+                <li>Multi-user dashboard with role-based access</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Author -->
+    <div class="author-section">
+        <div class="section-tag">Project Author</div>
+        <h2 class="section-title" style="margin-bottom:32px;">The Developer</h2>
+        <div class="author-card">
+            <div class="author-avatar">👨‍💻</div>
+            <div>
+                <div class="author-name">Manisha Banshiwal</div>
+                <div class="author-role">Mini Project — NFSU · CYBER SECURITY · 2026</div>
+                <p class="author-bio">
+                    This project was developed as a mini project submission exploring the intersection of browser security, machine learning, and digital forensics. The goal was to build something real — a working system with genuine detection capability — rather than a theoretical design.
+                </p>
+                <div class="author-tags">
+                    <span class="author-tag">CYBERSECURITY</span>
+                    <span class="author-tag">MACHINE LEARNING</span>
+                    <span class="author-tag">DIGITAL FORENSICS</span>
+                    <span class="author-tag">BROWSER EXTENSION</span>
+                    <span class="author-tag">FLASK</span>
+                    <span class="author-tag">PYTHON</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-brand">BrowserShield</div>
+    <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="download.html">Install</a></li>
+    </ul>
+    <div class="footer-copy">Mini Project © 2026</div>
+</footer>
+
+</body>
+</html>

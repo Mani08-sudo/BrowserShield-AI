@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrowserShield — AI-Driven Browser Security</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #060a0f;
+            --bg2:       #0a1018;
+            --bg3:       #0f1820;
+            --border:    #1a2d40;
+            --text:      #c8d8e8;
+            --muted:     #526878;
+            --accent:    #00c8ff;
+            --accent2:   #0080cc;
+            --high:      #ff3c3c;
+            --medium:    #ffaa00;
+            --low:       #00e87a;
+            --mono:      'Share Tech Mono', monospace;
+            --display:   'Barlow Condensed', sans-serif;
+            --body:      'Barlow', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Scanline texture overlay ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,200,255,0.012) 2px,
+                rgba(0,200,255,0.012) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            background: rgba(6,10,15,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-hex {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            animation: hex-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes hex-pulse {
+            0%,100% { filter: drop-shadow(0 0 6px var(--accent)); }
+            50%      { filter: drop-shadow(0 0 18px var(--accent)); }
+        }
+
+        .nav-brand {
+            font-family: var(--display);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 8px 16px;
+            font-family: var(--display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+            background: rgba(0,200,255,0.06);
+        }
+
+        .nav-cta {
+            font-family: var(--display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--bg) !important;
+            background: var(--accent) !important;
+            padding: 8px 20px !important;
+            border-radius: 4px !important;
+        }
+
+        .nav-cta:hover { background: #00aadd !important; }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Animated grid background */
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: grid-drift 20s linear infinite;
+        }
+
+        @keyframes grid-drift {
+            from { transform: translateY(0); }
+            to   { transform: translateY(60px); }
+        }
+
+        /* Radial glow behind hero content */
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0,200,255,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-eyebrow {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--accent);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 32px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero-title {
+            font-family: var(--display);
+            font-size: clamp(56px, 7vw, 92px);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .hero-title .accent { color: var(--accent); }
+
+        .hero-desc {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 480px;
+            margin-bottom: 40px;
+        }
+
+        .hero-desc strong { color: var(--text); font-weight: 500; }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--accent);
+            color: var(--bg);
+            font-family: var(--display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #00aadd;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,200,255,0.25);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: transparent;
+            color: var(--text);
+            font-family: var(--display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Hero visual — threat terminal */
+        .hero-visual {
+            position: relative;
+        }
+
+        .terminal {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,200,255,0.05);
+        }
+
+        .terminal-bar {
+            background: var(--bg3);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .t-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .t-dot.red    { background: var(--high); }
+        .t-dot.yellow { background: var(--medium); }
+        .t-dot.green  { background: var(--low); }
+
+        .terminal-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            margin-left: 8px;
+        }
+
+        .terminal-body {
+            padding: 24px;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .t-line { display: flex; gap: 12px; align-items: baseline; }
+        .t-prompt { color: var(--accent2); }
+        .t-text   { color: var(--text); }
+        .t-high   { color: var(--high); font-weight: bold; }
+        .t-low    { color: var(--low); }
+        .t-med    { color: var(--medium); }
+        .t-dim    { color: var(--muted); }
+
+        .t-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--accent);
+            animation: cursor-blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes cursor-blink {
+            0%,100% { opacity: 1; }
+            50%      { opacity: 0; }
+        }
+
+        /* Scanning animation line */
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 2.5s ease-in-out infinite;
+            margin: 4px 0;
+        }
+
+        @keyframes scan {
+            0%   { transform: translateX(-100%); opacity: 0; }
+            20%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* ── FLOW BAR ── */
+        .flow-bar {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 28px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            overflow-x: auto;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 0 32px;
+            text-align: center;
+        }
+
+        .flow-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .flow-label {
+            font-family: var(--display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .flow-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .flow-arrow {
+            font-family: var(--mono);
+            font-size: 20px;
+            color: var(--accent);
+            padding: 0 8px;
+            flex-shrink: 0;
+        }
+
+        .flow-step.shield .flow-icon {
+            color: var(--accent);
+            filter: drop-shadow(0 0 8px var(--accent));
+        }
+
+        /* ── FEATURES SECTION ── */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 48px;
+        }
+
+        .section-tag {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: var(--display);
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            font-size: 17px;
+            color: var(--muted);
+            font-weight: 300;
+            max-width: 560px;
+            line-height: 1.7;
+            margin-bottom: 64px;
+        }
+
+        /* Feature cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .feature-card {
+            background: var(--bg2);
+            padding: 36px 32px;
+            transition: background 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover { background: var(--bg3); }
+        .feature-card:hover::after { transform: scaleX(1); }
+
+        .feat-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .feat-title {
+            font-family: var(--display);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .feat-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        .feat-tag {
+            display: inline-block;
+            margin-top: 16px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            background: rgba(0,200,255,0.08);
+            color: var(--accent);
+            border: 1px solid rgba(0,200,255,0.15);
+        }
+
+        /* ── STATS STRIP ── */
+        .stats-strip {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 48px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .stat-item {
+            background: var(--bg2);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .stat-num {
+            font-family: var(--display);
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* ── INTELLIGENCE SECTION ── */
+        .intel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .intel-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .intel-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .intel-bar-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .intel-bar-track {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .intel-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            animation: bar-grow 1.5s ease forwards;
+        }
+
+        @keyframes bar-grow {
+            from { width: 0; }
+        }
+
+        .intel-bar-val {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text);
+            width: 40px;
+            text-align: right;
+        }
+
+        .intel-text { }
+
+        .intel-point {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .intel-point-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(0,200,255,0.08);
+            border: 1px solid rgba(0,200,255,0.15);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .intel-point-title {
+            font-family: var(--display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .intel-point-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-brand {
+            font-family: var(--display);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--accent); }
+
+        .footer-copy {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* ── ANIMATIONS ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-up 0.7s ease forwards;
+        }
+
+        @keyframes fade-up {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+    <a href="index.html" class="nav-logo">
+        <div class="nav-hex">🛡</div>
+        <span class="nav-brand">BrowserShield</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="download.html" class="nav-cta">Install</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+        <div class="hero-left">
+            <div class="hero-eyebrow fade-up">AI-Driven Browser Security</div>
+            <h1 class="hero-title fade-up delay-1">
+                Protect<br>
+                Before<br>
+                <span class="accent">You Click</span>
+            </h1>
+            <p class="hero-desc fade-up delay-2">
+                BrowserShield acts as a <strong>security guard between you and the internet</strong> — analyzing URLs, emails, and downloads <strong>before</strong> you interact with them. Not after.
+            </p>
+            <div class="hero-actions fade-up delay-3">
+                <a href="download.html" class="btn-primary">⬇ Install Extension</a>
+                <a href="flow.html" class="btn-outline">See How It Works →</a>
+            </div>
+        </div>
+
+        <div class="hero-visual fade-up delay-4">
+            <div class="terminal">
+                <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yellow"></div>
+                    <div class="t-dot green"></div>
+                    <span class="terminal-title">BROWSERSHIELD — LIVE THREAT ANALYSIS</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="t-line">
+                        <span class="t-prompt">›</span>
+                        <span class="t-text">Analyzing URL...</span>
+                    </div>
+                    <div class="scan-line"></div>
+                    <div class="t-line">
+                        <span class="t-prompt">›</span>
+                        <span class="t-text">http://paypa1-secure.xyz/login</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt">⬤</span>
+                        <span class="t-high">RISK: HIGH — Score 9/10</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt"> </span>
+                        <span class="t-dim">Brand spoofing detected: 'paypa1'</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt"> </span>
+                        <span class="t-dim">Suspicious TLD: .xyz</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt"> </span>
+                        <span class="t-dim">Keyword: login, secure</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt">⬤</span>
+                        <span class="t-high">ACTION: BLOCKED — User warned</span>
+                    </div>
+                    <div class="t-line" style="margin-top:8px">
+                        <span class="t-prompt">›</span>
+                        <span class="t-text">Analyzing email...</span>
+                    </div>
+                    <div class="scan-line" style="animation-delay:1.2s"></div>
+                    <div class="t-line">
+                        <span class="t-prompt">⬤</span>
+                        <span class="t-low">RISK: LOW — ML: 0.03</span>
+                    </div>
+                    <div class="t-line">
+                        <span class="t-prompt">›</span>
+                        <span class="t-text">System monitoring active <span class="t-cursor"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── HOW IT FLOWS ── -->
+<div class="flow-bar">
+    <div class="flow-step">
+        <div class="flow-icon">👤</div>
+        <div class="flow-label">User Action</div>
+        <div class="flow-sub">Click / Download / Read</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step shield">
+        <div class="flow-icon">🛡</div>
+        <div class="flow-label">BrowserShield</div>
+        <div class="flow-sub">Intercepts & Analyzes</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+        <div class="flow-icon">🧠</div>
+        <div class="flow-label">AI Decision</div>
+        <div class="flow-sub">Rules + ML Model</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+        <div class="flow-icon">✅</div>
+        <div class="flow-label">Allow / Block</div>
+        <div class="flow-sub">User Protected</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+        <div class="flow-icon">🔍</div>
+        <div class="flow-label">Evidence Logged</div>
+        <div class="flow-sub">Forensic Dashboard</div>
+    </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<div class="section">
+    <div class="section-tag">Core Capabilities</div>
+    <h2 class="section-title">Three Layers<br>of Protection</h2>
+    <p class="section-sub">Every threat vector covered — before you interact with it.</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feat-icon">🔗</span>
+            <div class="feat-title">URL Analysis</div>
+            <div class="feat-desc">11 detection rules catch phishing sites in real time. IP-based URLs, brand spoofing, suspicious TLDs, homograph attacks, and more — analyzed the moment you navigate.</div>
+            <span class="feat-tag">11 DETECTION RULES</span>
+        </div>
+        <div class="feature-card">
+            <span class="feat-icon">✉️</span>
+            <div class="feat-title">Email Detection</div>
+            <div class="feat-desc">Hybrid AI engine combines a trained Logistic Regression model with rule-based pattern matching. Scans Gmail and Outlook directly, showing warnings inside the page.</div>
+            <span class="feat-tag">ML + RULES HYBRID</span>
+        </div>
+        <div class="feature-card">
+            <span class="feat-icon">📄</span>
+            <div class="feat-title">File Inspection</div>
+            <div class="feat-desc">Downloads are analyzed before execution. Extension spoofing, magic byte detection, entropy analysis, and static sandbox scanning catch disguised malware.</div>
+            <span class="feat-tag">STATIC SANDBOX</span>
+        </div>
+        <div class="feature-card">
+            <span class="feat-icon">🔬</span>
+            <div class="feat-title">Static Sandbox</div>
+            <div class="feat-desc">7-step analysis without executing the file: hash lookup, PE header analysis, entropy scoring, 35 malicious pattern checks, and extension spoofing detection.</div>
+            <span class="feat-tag">7-STEP ANALYSIS</span>
+        </div>
+        <div class="feature-card">
+            <span class="feat-icon">📊</span>
+            <div class="feat-title">Forensics Dashboard</div>
+            <div class="feat-desc">Every detected threat is logged as forensic evidence. Filter by risk, type, or time. Auto-refreshes every 30 seconds. Full audit trail for investigation.</div>
+            <span class="feat-tag">DIGITAL FORENSICS</span>
+        </div>
+        <div class="feature-card">
+            <span class="feat-icon">🧩</span>
+            <div class="feat-title">Chrome Extension</div>
+            <div class="feat-desc">Lightweight Manifest V3 extension. Works silently in the background. Badge shows risk level. Popup shows last scan and live stats. Allow/Block popups for downloads.</div>
+            <span class="feat-tag">MANIFEST V3</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="stats-strip">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <div class="stat-num">11</div>
+            <div class="stat-label">URL Detection Rules</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">30+</div>
+            <div class="stat-label">File Types Covered</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">35</div>
+            <div class="stat-label">Sandbox Patterns</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Protection Layers</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── INTELLIGENCE ── -->
+<div class="section">
+    <div class="intel-grid">
+        <div class="intel-text">
+            <div class="section-tag">Detection Intelligence</div>
+            <h2 class="section-title">Rules +<br>AI Combined</h2>
+            <p class="section-sub">Two types of intelligence working together.</p>
+
+            <div class="intel-point">
+                <div class="intel-point-icon">⚡</div>
+                <div>
+                    <div class="intel-point-title">Rule-Based Detection</div>
+                    <div class="intel-point-desc">Fast, deterministic, reliable. Checks known patterns instantly — IP addresses, suspicious keywords, brand spoofing, dangerous file types.</div>
+                </div>
+            </div>
+            <div class="intel-point">
+                <div class="intel-point-icon">🧠</div>
+                <div>
+                    <div class="intel-point-title">Machine Learning Model</div>
+                    <div class="intel-point-desc">Trained on the SpamAssassin dataset using TF-IDF + Logistic Regression. Catches social engineering patterns and urgency language that rules miss.</div>
+                </div>
+            </div>
+            <div class="intel-point">
+                <div class="intel-point-icon">🔗</div>
+                <div>
+                    <div class="intel-point-title">Hybrid Final Decision</div>
+                    <div class="intel-point-desc">Both scores combined into a single risk level. Neither alone is as accurate as both together.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="intel-visual">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:20px;">MODEL PERFORMANCE</div>
+
+            <div class="intel-bar">
+                <span class="intel-bar-label">Accuracy</span>
+                <div class="intel-bar-track">
+                    <div class="intel-bar-fill" style="width:94%;background:var(--accent);"></div>
+                </div>
+                <span class="intel-bar-val">94%</span>
+            </div>
+            <div class="intel-bar">
+                <span class="intel-bar-label">Precision</span>
+                <div class="intel-bar-track">
+                    <div class="intel-bar-fill" style="width:93%;background:var(--low);animation-delay:0.2s"></div>
+                </div>
+                <span class="intel-bar-val">93%</span>
+            </div>
+            <div class="intel-bar">
+                <span class="intel-bar-label">Recall</span>
+                <div class="intel-bar-track">
+                    <div class="intel-bar-fill" style="width:95%;background:var(--low);animation-delay:0.4s"></div>
+                </div>
+                <span class="intel-bar-val">95%</span>
+            </div>
+            <div class="intel-bar">
+                <span class="intel-bar-label">F1 Score</span>
+                <div class="intel-bar-track">
+                    <div class="intel-bar-fill" style="width:94%;background:var(--accent);animation-delay:0.6s"></div>
+                </div>
+                <span class="intel-bar-val">94%</span>
+            </div>
+            <div class="intel-bar">
+                <span class="intel-bar-label">ROC-AUC</span>
+                <div class="intel-bar-track">
+                    <div class="intel-bar-fill" style="width:98%;background:var(--medium);animation-delay:0.8s"></div>
+                </div>
+                <span class="intel-bar-val">98%</span>
+            </div>
+
+            <div style="margin-top:32px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;line-height:2;">
+                <div style="color:var(--muted);">FALSE POSITIVE RATE</div>
+                <div style="color:var(--low);font-size:22px;font-weight:bold;">&lt; 5%</div>
+                <div style="color:var(--muted);font-size:11px;">Safe emails incorrectly flagged</div>
+            </div>
+
+            <div style="padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:12px;">
+                ⓘ Update these metrics after running train_email_model.py
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-brand">BrowserShield</div>
+    <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="download.html">Install</a></li>
+    </ul>
+    <div class="footer-copy">Mini Project © 2026</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BrowserShield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:       #0d1117;
+            --panel:    #111820;
+            --border:   #1e2d3d;
+            --text:     #c9d8e8;
+            --muted:    #637a90;
+            --accent:   #0f8fe8;
+            --high:     #ff4c4c;
+            --medium:   #f5a623;
+            --low:      #39d98a;
+            --mono:     'Share Tech Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            width: 320px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Header */
+        .header {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shield-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .header-text { flex: 1; }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 11px;
+        }
+
+        .status-connected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--low);
+        }
+
+        .status-disconnected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--high);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-connected .status-dot {
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+
+        /* Last scan card */
+        .section {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .scan-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .scan-card.risk-high   { border-left: 3px solid var(--high); }
+        .scan-card.risk-medium { border-left: 3px solid var(--medium); }
+        .scan-card.risk-low    { border-left: 3px solid var(--low); }
+        .scan-card.empty       { border-left: 3px solid var(--border); }
+
+        .scan-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .scan-row:last-child { margin-bottom: 0; }
+
+        .scan-key {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            padding-top: 1px;
+        }
+
+        .scan-val {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text);
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .risk-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .risk-pill.high   { background: rgba(255,76,76,0.15); color: var(--high); }
+        .risk-pill.medium { background: rgba(245,166,35,0.15); color: var(--medium); }
+        .risk-pill.low    { background: rgba(57,217,138,0.15); color: var(--low); }
+
+        .type-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: rgba(15,143,232,0.1);
+            color: var(--accent);
+            border: 1px solid rgba(15,143,232,0.2);
+            text-transform: uppercase;
+        }
+
+        .no-scan {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        /* Stats mini */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .mini-stat {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .mini-stat-val {
+            font-family: var(--mono);
+            font-size: 22px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .mini-stat-val.high   { color: var(--high); }
+        .mini-stat-val.medium { color: var(--medium); }
+        .mini-stat-val.low    { color: var(--low); }
+
+        .mini-stat-label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Buttons */
+        .actions {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: rgba(15,143,232,0.15);
+            border: 1px solid rgba(15,143,232,0.4);
+            color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: rgba(15,143,232,0.25);
+            border-color: var(--accent);
+        }
+
+        .btn-ghost {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 10px 16px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--muted);
+            text-align: center;
+            letter-spacing: 1px;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="shield-icon">🛡</div>
+        <div class="header-text">
+            <div class="header-title">BrowserShield</div>
+            <div class="header-sub">Real-time Protection</div>
+        </div>
+    </div>
+
+    <!-- Backend status -->
+    <div class="status-bar">
+        <div id="statusIndicator" class="status-disconnected">
+            <div class="status-dot"></div>
+            <span id="statusText">Connecting...</span>
+        </div>
+        <span id="statusVersion" style="color: var(--muted);">—</span>
+    </div>
+
+    <!-- Last scan -->
+    <div class="section">
+        <div class="section-label">Last Scan</div>
+        <div id="lastScanCard" class="scan-card empty">
+            <div class="no-scan">No scans yet this session</div>
+        </div>
+    </div>
+
+    <!-- Mini stats -->
+    <div class="section">
+        <div class="section-label">Session Stats</div>
+        <div class="stats-row">
+            <div class="mini-stat">
+                <div class="mini-stat-val high"   id="countHigh">—</div>
+                <div class="mini-stat-label">High</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-val medium" id="countMedium">—</div>
+                <div class="mini-stat-label">Medium</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-val low"    id="countLow">—</div>
+                <div class="mini-stat-label">Low</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+        <button class="btn btn-primary" id="btnDashboard">
+            📊 Open Forensics Dashboard
+        </button>
+        <button class="btn btn-ghost" id="btnRefresh">
+            ↻ Refresh Status
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        BROWSERSHIELD &nbsp;·&nbsp; FORENSICS ACTIVE
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

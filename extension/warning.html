@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BrowserShield Warning</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#0b0f19;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    text-align:center;
+    max-width:650px;
+    padding:40px;
+}
+
+h1{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.warning{
+    color:#f5a623;
+}
+
+.block{
+    color:#ff4c4c;
+}
+
+.url{
+    margin-top:10px;
+    font-size:14px;
+    opacity:0.8;
+    word-break:break-all;
+}
+
+.reason{
+    margin-top:25px;
+    font-size:18px;
+    line-height:1.6;
+}
+
+.buttons{
+    margin-top:40px;
+}
+
+button{
+    padding:12px 22px;
+    margin:10px;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.back{
+    background:#39d98a;
+}
+
+.continue{
+    background:#f5a623;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="title">Security Alert</h1>
+
+<div class="url" id="urlText"></div>
+
+<div class="reason" id="reasonText"></div>
+
+<div class="buttons" id="buttons">
+<button class="back" onclick="goBack()">Go Back</button>
+<button class="continue" onclick="continueAnyway()">Continue Anyway</button>
+</div>
+
+</div>
+
+<script src="warning.js"></script>
+
+</body>
+</html>

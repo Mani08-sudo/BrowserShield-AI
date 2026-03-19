@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install — BrowserShield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#060a0f; --bg2:#0a1018; --bg3:#0f1820;
+            --border:#1a2d40; --text:#c8d8e8; --muted:#526878;
+            --accent:#00c8ff; --accent2:#0080cc;
+            --high:#ff3c3c; --medium:#ffaa00; --low:#00e87a;
+            --mono:'Share Tech Mono',monospace;
+            --display:'Barlow Condensed',sans-serif;
+            --body:'Barlow',sans-serif;
+        }
+        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+        body { font-family:var(--body); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+        body::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px); pointer-events:none; z-index:1000; }
+
+        nav { position:sticky; top:0; z-index:500; background:rgba(6,10,15,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:0 48px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+        .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .nav-hex { width:36px; height:36px; background:var(--accent); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:grid; place-items:center; font-size:16px; animation:hex-pulse 4s ease-in-out infinite; }
+        @keyframes hex-pulse { 0%,100%{filter:drop-shadow(0 0 6px var(--accent));}50%{filter:drop-shadow(0 0 18px var(--accent));} }
+        .nav-brand { font-family:var(--display); font-size:22px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--text); }
+        .nav-links { display:flex; align-items:center; gap:4px; list-style:none; }
+        .nav-links a { display:block; padding:8px 16px; font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); text-decoration:none; border-radius:4px; transition:color 0.2s,background 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color:var(--accent); background:rgba(0,200,255,0.06); }
+        .nav-cta { color:var(--bg) !important; background:var(--accent) !important; padding:8px 20px !important; border-radius:4px !important; }
+
+        .page-header { padding:80px 48px 60px; max-width:1200px; margin:0 auto; border-bottom:1px solid var(--border); display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+        .page-tag { font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:4px; text-transform:uppercase; margin-bottom:16px; }
+        .page-title { font-family:var(--display); font-size:clamp(48px,6vw,80px); font-weight:800; text-transform:uppercase; letter-spacing:-1px; line-height:0.95; margin-bottom:20px; }
+        .page-desc { font-size:18px; color:var(--muted); font-weight:300; max-width:500px; line-height:1.7; }
+        .prereq-box { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:24px 28px; text-align:right; }
+        .prereq-title { font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+        .prereq-item { font-family:var(--mono); font-size:12px; color:var(--text); margin-bottom:6px; display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+        .prereq-item::before { content:'✓'; color:var(--low); }
+
+        .content { max-width:1200px; margin:0 auto; padding:80px 48px; }
+
+        /* Install steps */
+        .install-steps { display:flex; flex-direction:column; }
+        .install-step { display:grid; grid-template-columns:64px 1fr; border:1px solid var(--border); background:var(--bg2); }
+        .install-step:first-child { border-radius:8px 8px 0 0; }
+        .install-step:last-child { border-radius:0 0 8px 8px; }
+        .install-step:not(:last-child) { border-bottom:none; }
+        .step-num-col { background:var(--bg3); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:28px 0; border-right:1px solid var(--border); }
+        .step-circle { width:36px; height:36px; border-radius:50%; border:2px solid var(--accent); display:grid; place-items:center; font-family:var(--display); font-size:18px; font-weight:800; color:var(--accent); }
+        .step-body { padding:28px 36px; }
+        .step-header { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+        .step-icon-sm { font-size:20px; }
+        .step-title { font-family:var(--display); font-size:22px; font-weight:800; letter-spacing:1px; text-transform:uppercase; }
+        .step-desc { font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px; max-width:640px; }
+        .code-block { background:var(--bg); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+        .code-header { background:var(--bg3); padding:10px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+        .code-lang { font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
+        .copy-btn { font-family:var(--mono); font-size:10px; color:var(--muted); background:none; border:1px solid var(--border); padding:4px 10px; border-radius:3px; cursor:pointer; letter-spacing:1px; transition:all 0.2s; }
+        .copy-btn:hover { color:var(--accent); border-color:var(--accent); }
+        .code-body { padding:16px 20px; font-family:var(--mono); font-size:13px; line-height:2; }
+        .code-comment { color:var(--muted); }
+        .code-cmd { color:var(--text); }
+        .code-prompt { color:var(--accent2); user-select:none; }
+        .code-out { color:var(--low); }
+        .chrome-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:20px; }
+        .chrome-step { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:20px 16px; text-align:center; }
+        .cs-num { font-family:var(--display); font-size:32px; font-weight:800; color:var(--accent); opacity:0.4; margin-bottom:8px; }
+        .cs-icon { font-size:24px; margin-bottom:8px; }
+        .cs-text { font-size:13px; color:var(--muted); line-height:1.5; }
+        .cs-text strong { color:var(--text); }
+        .verify-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+        .verify-item { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:16px 20px; display:flex; align-items:flex-start; gap:12px; }
+        .verify-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+        .verify-title { font-family:var(--display); font-size:14px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+        .verify-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+
+        /* ── COMMON ISSUES ── */
+        .section-block { margin-top:80px; }
+        .section-tag { font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:4px; text-transform:uppercase; margin-bottom:12px; }
+        .section-title { font-family:var(--display); font-size:clamp(32px,4vw,52px); font-weight:800; text-transform:uppercase; letter-spacing:-1px; margin-bottom:8px; }
+        .section-sub { font-size:15px; color:var(--muted); font-weight:300; max-width:680px; line-height:1.7; margin-bottom:40px; }
+
+        .issues-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+        .issue-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s, transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .issue-card:hover { border-color: rgba(0,200,255,0.2); transform: translateY(-2px); }
+        .issue-card.wide { grid-column: 1 / -1; }
+
+        .issue-header {
+            padding: 20px 24px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg3);
+        }
+        .issue-icon-wrap {
+            width: 42px; height: 42px;
+            border-radius: 8px;
+            display: grid; place-items: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .red    { background:rgba(255,60,60,0.1);  border:1px solid rgba(255,60,60,0.25); }
+        .orange { background:rgba(255,170,0,0.1);  border:1px solid rgba(255,170,0,0.25); }
+        .blue   { background:rgba(0,200,255,0.08); border:1px solid rgba(0,200,255,0.2); }
+        .green  { background:rgba(0,232,122,0.08); border:1px solid rgba(0,232,122,0.2); }
+
+        .issue-number { font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }
+        .issue-title { font-family:var(--display); font-size:18px; font-weight:700; letter-spacing:1px; text-transform:uppercase; line-height:1.2; }
+
+        .issue-body { padding: 20px 24px; flex: 1; display:flex; flex-direction:column; gap:14px; }
+        .issue-body.two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+
+        .issue-symptom {
+            display: flex; gap: 12px; align-items: flex-start;
+            padding: 10px 14px;
+            background: rgba(255,60,60,0.04);
+            border: 1px solid rgba(255,60,60,0.15);
+            border-radius: 6px;
+        }
+        .issue-card.wide .issue-symptom { grid-column: 1/-1; }
+        .symptom-label { font-family:var(--mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--high); flex-shrink:0; padding-top:2px; }
+        .symptom-text { font-family:var(--mono); font-size:12px; color:var(--text); line-height:1.6; }
+
+        .issue-cause { font-size:13px; color:var(--muted); line-height:1.75; }
+        .issue-cause code { font-family:var(--mono); background:var(--bg); color:var(--accent); padding:2px 6px; border-radius:3px; font-size:11px; }
+
+        .fix-label { font-family:var(--mono); font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--low); margin-bottom:6px; }
+
+        .issue-fix {
+            font-size:13px; color:var(--text); line-height:1.75;
+            padding: 12px 16px;
+            background: rgba(0,232,122,0.04);
+            border: 1px solid rgba(0,232,122,0.12);
+            border-radius: 6px;
+            flex: 1;
+        }
+        .issue-fix code { font-family:var(--mono); background:var(--bg); color:var(--accent); padding:2px 6px; border-radius:3px; font-size:11px; }
+
+        footer { border-top:1px solid var(--border); padding:40px 48px; display:flex; align-items:center; justify-content:space-between; margin-top:80px; }
+        .footer-brand { font-family:var(--display); font-size:18px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--muted); }
+        .footer-links { display:flex; gap:32px; list-style:none; }
+        .footer-links a { font-family:var(--mono); font-size:11px; color:var(--muted); text-decoration:none; letter-spacing:2px; text-transform:uppercase; transition:color 0.2s; }
+        .footer-links a:hover { color:var(--accent); }
+        .footer-copy { font-family:var(--mono); font-size:11px; color:var(--muted); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">
+        <div class="nav-hex">🛡</div>
+        <span class="nav-brand">BrowserShield</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="download.html" class="active nav-cta">Install</a></li>
+    </ul>
+</nav>
+
+<div class="page-header">
+    <div>
+        <div class="page-tag">Installation Guide</div>
+        <h1 class="page-title">Get<br>Started</h1>
+        <p class="page-desc">Set up BrowserShield in 6 steps. The backend, ML model, and Chrome extension all need to be running together.</p>
+    </div>
+    <div class="prereq-box">
+        <div class="prereq-title">Prerequisites</div>
+        <div class="prereq-item">Python 3.8+</div>
+        <div class="prereq-item">Google Chrome</div>
+        <div class="prereq-item">pip installed</div>
+        <div class="prereq-item">Git (optional)</div>
+    </div>
+</div>
+
+<div class="content">
+
+    <div class="install-steps">
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">1</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">📁</span><div class="step-title">Get the Project Files</div></div>
+                <p class="step-desc">Download or clone the BrowserShield project to your computer.</p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Terminal / CMD</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <div class="code-body">
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">git clone https://github.com/yourusername/browsershield.git</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">cd browsershield</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">2</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">🐍</span><div class="step-title">Create Virtual Environment</div></div>
+                <p class="step-desc">Isolate the project dependencies from your system Python installation.</p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Terminal / CMD</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <div class="code-body">
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">python -m venv venv</span></div>
+                        <div><span class="code-comment"># Windows</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">venv\Scripts\activate</span></div>
+                        <div><span class="code-comment"># Mac / Linux</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">source venv/bin/activate</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">3</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">📦</span><div class="step-title">Install Dependencies</div></div>
+                <p class="step-desc">Install all required Python packages in one command.</p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Terminal / CMD</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <div class="code-body">
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">pip install -r requirements.txt</span></div>
+                        <div><span class="code-out">Successfully installed flask scikit-learn pandas numpy ✓</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">4</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">🤖</span><div class="step-title">Train the ML Model</div></div>
+                <p class="step-desc">Run the training script once to generate the phishing detection model. Creates <code style="font-family:var(--mono);color:var(--accent);font-size:12px;">email_model.pkl</code> and <code style="font-family:var(--mono);color:var(--accent);font-size:12px;">vectorizer.pkl</code>.</p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Terminal / CMD</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <div class="code-body">
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">cd ml_training</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">python train_email_model.py</span></div>
+                        <div><span class="code-out">✓ Model saved: models/email_model.pkl</span></div>
+                        <div><span class="code-out">✓ Evaluation report: models/evaluation_report.txt</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">cd ..</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">5</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">⚗️</span><div class="step-title">Start the Backend Server</div></div>
+                <p class="step-desc">Run the Flask backend. Keep this terminal open — the extension communicates with it while you browse.</p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Terminal / CMD</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <div class="code-body">
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">cd backend</span></div>
+                        <div><span class="code-prompt">$ </span><span class="code-cmd">python app.py</span></div>
+                        <div><span class="code-out">Starting BrowserShield on http://0.0.0.0:5000 ✓</span></div>
+                    </div>
+                </div>
+                <div style="margin-top:14px;padding:12px 16px;background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.15);border-radius:6px;font-size:13px;color:var(--muted);">
+                    💡 Dashboard available at <strong style="color:var(--accent);">http://127.0.0.1:5000/dashboard</strong>
+                </div>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="step-num-col"><div class="step-circle">6</div></div>
+            <div class="step-body">
+                <div class="step-header"><span class="step-icon-sm">🧩</span><div class="step-title">Install the Chrome Extension</div></div>
+                <p class="step-desc">Load the extension in Chrome using Developer Mode — no Chrome Web Store required.</p>
+                <div class="chrome-steps">
+                    <div class="chrome-step"><div class="cs-num">1</div><div class="cs-icon">🌐</div><div class="cs-text">Go to <strong>chrome://extensions/</strong></div></div>
+                    <div class="chrome-step"><div class="cs-num">2</div><div class="cs-icon">🔧</div><div class="cs-text">Enable <strong>Developer Mode</strong> toggle (top right)</div></div>
+                    <div class="chrome-step"><div class="cs-num">3</div><div class="cs-icon">📂</div><div class="cs-text">Click <strong>Load unpacked</strong> → select <strong>extension/</strong> folder</div></div>
+                    <div class="chrome-step"><div class="cs-num">4</div><div class="cs-icon">🛡</div><div class="cs-text">BrowserShield icon appears in <strong>Chrome toolbar ✓</strong></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verify -->
+    <div style="margin-top:48px;">
+        <div class="section-tag">Verification</div>
+        <h2 class="section-title" style="margin-bottom:8px;">Check Everything Works</h2>
+        <p style="font-size:15px;color:var(--muted);margin-bottom:0;line-height:1.7;">Four things to confirm before you start browsing.</p>
+        <div class="verify-grid">
+            <div class="verify-item"><span class="verify-icon">🟢</span><div><div class="verify-title">Backend Running</div><div class="verify-desc">Visit <code style="font-family:var(--mono);color:var(--accent);font-size:11px;">http://127.0.0.1:5000/</code> — JSON status response appears.</div></div></div>
+            <div class="verify-item"><span class="verify-icon">🟢</span><div><div class="verify-title">Dashboard Loads</div><div class="verify-desc">Visit <code style="font-family:var(--mono);color:var(--accent);font-size:11px;">/dashboard</code> — forensics incident table appears.</div></div></div>
+            <div class="verify-item"><span class="verify-icon">🟢</span><div><div class="verify-title">Extension Connected</div><div class="verify-desc">Click the toolbar icon — popup shows <strong style="color:var(--low);">Backend Connected</strong> in green.</div></div></div>
+            <div class="verify-item"><span class="verify-icon">🟢</span><div><div class="verify-title">Detection Working</div><div class="verify-desc">Browse any website — badge updates and incidents appear in the dashboard.</div></div></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         COMMON ISSUES
+    ════════════════════════════════════ -->
+    <div class="section-block">
+        <div class="section-tag">Troubleshooting</div>
+        <h2 class="section-title">Common Issues &amp; Fixes</h2>
+        <p class="section-sub">These are the real problems encountered during development and testing of BrowserShield — with the exact root cause and fix applied in each case.</p>
+
+        <div class="issues-grid">
+
+            <!-- 01 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap red">❌</div>
+                    <div>
+                        <div class="issue-number">ISSUE 01</div>
+                        <div class="issue-title">Extension Cannot Reach Backend</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Popup shows "Backend Offline". Console: net::ERR_CONNECTION_REFUSED</span>
+                    </div>
+                    <div class="issue-cause">The Flask server is not running or the terminal running it was closed. The extension requires the backend to be active at all times.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix</div>
+                        <div class="issue-fix">Navigate to the <code>backend/</code> folder and run <code>python app.py</code>. Keep the terminal open — the server must stay running while browsing.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap red">🤖</div>
+                    <div>
+                        <div class="issue-number">ISSUE 02</div>
+                        <div class="issue-title">ML Model File Not Found on Startup</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Backend crashes: FileNotFoundError — models/email_model.pkl not found</span>
+                    </div>
+                    <div class="issue-cause">The model has not been trained yet. The <code>models/</code> folder exists but <code>.pkl</code> files are missing — they are generated by the training script, not included in the repo.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix</div>
+                        <div class="issue-fix">Run: <code>cd ml_training</code> then <code>python train_email_model.py</code>. This generates both <code>email_model.pkl</code> and <code>vectorizer.pkl</code> in the <code>models/</code> folder.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap orange">🗄️</div>
+                    <div>
+                        <div class="issue-number">ISSUE 03</div>
+                        <div class="issue-title">Database Saves in Wrong Location</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Dashboard shows no incidents even though backend logs confirm they are saved. Two incidents.db files exist in different folders.</span>
+                    </div>
+                    <div class="issue-cause">The original <code>db.py</code> used a relative path <code>"incidents.db"</code>. The database was created wherever Flask was run from — not in the <code>database/</code> folder. This created two separate databases.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix Applied in Code</div>
+                        <div class="issue-fix">Changed to absolute path using <code>os.path.abspath(__file__)</code> so the database always saves at <code>backend/database/incidents.db</code> regardless of where the app is launched from.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 04 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap orange">🌐</div>
+                    <div>
+                        <div class="issue-number">ISSUE 04</div>
+                        <div class="issue-title">CORS Error — Extension Requests Blocked</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Console: Access blocked by CORS policy. No 'Access-Control-Allow-Origin' header present on response.</span>
+                    </div>
+                    <div class="issue-cause">The browser extension runs on a different origin than the Flask server. Without CORS headers, the browser blocks all cross-origin requests silently.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix Applied in Code</div>
+                        <div class="issue-fix">Added CORS headers to all responses in <code>app.py</code> using <code>@app.after_request</code> hook. <code>Access-Control-Allow-Origin: *</code> now allows the extension to communicate freely with the backend.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 05 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap blue">📡</div>
+                    <div>
+                        <div class="issue-number">ISSUE 05</div>
+                        <div class="issue-title">VMware Extension Cannot Reach Host Backend</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Extension in virtual machine fails to connect. Backend works on host but not from VMware browser.</span>
+                    </div>
+                    <div class="issue-cause">Extension was connecting to <code>127.0.0.1</code> (localhost). Inside VMware, localhost points to the VM itself — not the host machine running Flask.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix</div>
+                        <div class="issue-fix">Change <code>BACKEND</code> in <code>background.js</code> from <code>127.0.0.1</code> to the host machine IP (e.g. <code>192.168.x.x:5000</code>). Flask already listens on <code>0.0.0.0</code> so it accepts external connections.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 06 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap blue">🔁</div>
+                    <div>
+                        <div class="issue-number">ISSUE 06</div>
+                        <div class="issue-title">Same URL Logged 3–5 Times Per Visit</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Dashboard shows duplicate incidents for the same URL. Backend receives multiple requests per single page navigation.</span>
+                    </div>
+                    <div class="issue-cause">Chrome fires <code>webNavigation.onCompleted</code> multiple times per page load — once for the main frame and again for sub-frames and redirects. Each event triggered a separate API call.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix Applied in Code</div>
+                        <div class="issue-fix">Added a URL deduplication cache (JavaScript <code>Set</code>) in <code>background.js</code>. Each URL is cached after first analysis. Duplicate events within the session are skipped. Cache is capped at 200 entries.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 07 — WIDE -->
+            <div class="issue-card wide">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap red">🔬</div>
+                    <div>
+                        <div class="issue-number">ISSUE 07 — Critical</div>
+                        <div class="issue-title">Sandbox Always Returned "Safe" — Hardcoded Result</div>
+                    </div>
+                </div>
+                <div class="issue-body two-col">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Every downloaded file — including invoice.pdf.exe and malware.exe — was reported as Low Risk / Safe regardless of content</span>
+                    </div>
+                    <div>
+                        <div class="issue-cause"><strong style="color:var(--text);">Root Cause 1:</strong> <code>sandbox.py</code> was completely empty — the file existed but contained zero code. In <code>file_routes.py</code>, the sandbox result was hardcoded as <code style="color:var(--high);">sandbox_result = "safe"</code> meaning every file passed as safe unconditionally.</div>
+                        <div class="fix-label" style="margin-top:12px;">✓ Fix Applied</div>
+                        <div class="issue-fix">Built <code>sandbox.py</code> from scratch with 7-step static analysis: MD5 hash lookup, magic byte detection, Shannon entropy scoring, 35 suspicious code pattern scans, PE header analysis, extension spoofing detection, and file size anomaly checks.</div>
+                    </div>
+                    <div>
+                        <div class="issue-cause"><strong style="color:var(--text);">Root Cause 2:</strong> Even after writing <code>sandbox.py</code>, the route was still not calling it. The hardcoded result remained in <code>file_routes.py</code> — the sandbox function was never actually invoked.</div>
+                        <div class="fix-label" style="margin-top:12px;">✓ Fix Applied</div>
+                        <div class="issue-fix">Rewrote <code>file_routes.py</code> to call <code>run_sandbox(file_path)</code> when risk score ≥ 4. The sandbox verdict can now upgrade risk level — files passing extension analysis can still be flagged High Risk if malicious patterns are found inside.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 08 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap orange">📧</div>
+                    <div>
+                        <div class="issue-number">ISSUE 08</div>
+                        <div class="issue-title">Phishing Emails Passing Sender Check</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">Phishing emails from evil@attacker.com that mentioned "PayPal" in the body were passing the sender domain check as legitimate.</span>
+                    </div>
+                    <div class="issue-cause">The original code checked if the sender domain appeared <em>anywhere in the body text</em>. Mentioning a brand name in the email content would pass the check — completely wrong logic.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix Applied in Code</div>
+                        <div class="issue-fix">Changed to extract actual link domains from URLs in the body using regex, then compare the sender domain against those link domains — not the raw text. Only a real URL domain match now passes the check.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 09 -->
+            <div class="issue-card">
+                <div class="issue-header">
+                    <div class="issue-icon-wrap green">📄</div>
+                    <div>
+                        <div class="issue-number">ISSUE 09</div>
+                        <div class="issue-title">Double Extension Spoofing Not Detected</div>
+                    </div>
+                </div>
+                <div class="issue-body">
+                    <div class="issue-symptom">
+                        <span class="symptom-label">Symptom</span>
+                        <span class="symptom-text">File named invoice.pdf.exe was treated as low risk. The dangerous .exe extension was hidden behind a decoy .pdf extension.</span>
+                    </div>
+                    <div class="issue-cause">Original <code>file_analysis.py</code> only used <code>os.path.splitext()</code> which returns only the final extension — making double extension attacks completely invisible to the system.</div>
+                    <div>
+                        <div class="fix-label">✓ Fix Applied in Code</div>
+                        <div class="issue-fix">Added <code>_check_double_extension()</code> function that splits the filename on all dots, detects when a high-risk extension follows a low-risk decoy, and immediately assigns a score of 5 — flagging it as High Risk.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-brand">BrowserShield</div>
+    <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="flow.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="download.html">Install</a></li>
+    </ul>
+    <div class="footer-copy">Mini Project © 2026</div>
+</footer>
+
+<script>
+function copyCode(btn) {
+    const block = btn.closest('.code-block').querySelector('.code-body');
+    const text = Array.from(block.querySelectorAll('div'))
+        .map(l => l.textContent.replace(/^\$\s*/, '').trim())
+        .filter(l => l && !l.startsWith('#') && !l.startsWith('✓') && !l.startsWith('Successfully'))
+        .join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+</script>
+</body>
+</html>
