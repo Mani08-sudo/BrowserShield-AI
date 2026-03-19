@@ -131,6 +131,7 @@ BrowserShield logs all detected threats:
 ---
 
 # 📁 Project Structure
+```text
 BrowserShield-AI/
 ├── backend/                         ← Core backend system (Flask)
 │   ├── app.py                       ← Main server entry point
@@ -198,7 +199,7 @@ BrowserShield-AI/
 ├── .gitignore                       ← Ignored files (env, logs, db, etc.)
 ├── .env.example                     ← Sample environment variables
 └── README.md                        ← Project documentation
-
+```
 # ⚙️ Installation & Setup
 
 ## Prerequisites
