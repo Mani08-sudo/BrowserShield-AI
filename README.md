@@ -132,39 +132,73 @@ BrowserShield logs all detected threats:
 
 # 📁 Project Structure
 
-```text
-BROWSER-SHIELD/
-├── backend/
-│   ├── app.py
-│   ├── routes/
-│   ├── analysis/
-│   ├── security/
-│   ├── database/
-│   └── templates/
+BrowserShield-AI/
+├── backend/                         ← Core backend system (Flask)
+│   ├── app.py                       ← Main server entry point
+│   │
+│   ├── routes/                      ← API endpoints (request handling)
+│   │   ├── url_routes.py
+│   │   ├── email_routes.py
+│   │   ├── file_routes.py
+│   │   ├── incident_routes.py
+│   │   └── predict_url.py
+│   │
+│   ├── analysis/                    ← Detection & analysis logic
+│   │   ├── url_analysis.py
+│   │   ├── email_analysis.py
+│   │   ├── file_analysis.py
+│   │   ├── sandbox.py
+│   │   ├── ml_email_model.py
+│   │   └── virustotal.py
+│   │
+│   ├── security/                    ← Threat scoring & decision engine
+│   │   └── threat_engine.py
+│   │
+│   ├── database/                    ← Data storage layer
+│   │   ├── db.py
+│   │   └── incidents.db
+│   │
+│   └── templates/                   ← Web dashboard UI
+│       └── dashboard.html
 │
-├── extension/
+├── extension/                       ← Chrome browser extension
 │   ├── manifest.json
-│   ├── background.js
-│   ├── content.js
-│   ├── popup.html
-│   └── popup.js
+│   ├── background.js               ← Monitors URLs & downloads
+│   ├── content.js                  ← Scans email content (Gmail/Outlook)
+│   ├── popup.html                  ← User interface
+│   ├── popup.js
+│   ├── warning.html
+│   ├── warning.js
+│   └── icons/
 │
-├── models/
+├── models/                          ← Trained machine learning models
 │   ├── email_model.pkl
 │   ├── phishing_model.pkl
-│   └── vectorizer.pkl
+│   ├── vectorizer.pkl
+│   └── evaluation_report.txt
 │
-├── ml_training/
+├── ml_training/                     ← Model training scripts
 │   ├── train_email_model.py
 │   ├── train_url_model.py
-│   └── dataset/
+│   └── dataset/                     ← Training datasets (optional)
+│       └── SpamAssasin.csv
 │
-├── docs/
-├── website/
-├── requirements.txt
-└── README.md
-```
-
+├── website/                         ← Public project website (UI pages)
+│   ├── index.html
+│   ├── about.html
+│   ├── download.html
+│   ├── flow.html
+│   ├── css/
+│   └── js/
+│
+├── docs/                            ← Architecture & flow diagrams
+│   ├── architecture.png
+│   └── flowchart.png
+│
+├── requirements.txt                 ← Python dependencies
+├── .gitignore                       ← Ignored files (env, logs, db, etc.)
+├── .env.example                     ← Sample environment variables
+└── README.md                        ← Project documentation
 ---
 
 # ⚙️ Installation & Setup
@@ -285,15 +319,27 @@ GET /api/incidents
 
 # 📈 Model Evaluation
 
-| Metric              | Score |
-| ------------------- | ----- |
-| Accuracy            | 95%   |
-| F1 Score            | 0.94  |
-| ROC-AUC             | 0.98  |
-| False Positive Rate | 0.01  |
+## 📊 Model Performance
 
----
+The machine learning model was trained using the SpamAssassin dataset and evaluated on a test set.
 
+- **Accuracy:** 95.01%  
+- **F1 Score:** 0.9485  
+- **ROC-AUC:** 0.9870  
+- **False Positive Rate:** 1.23%  
+
+### Confusion Matrix
+
+|                | Predicted Legit | Predicted Phishing |
+|----------------|----------------|--------------------|
+| **Actual Legit**   | 1122 (TN)      | 14 (FP)            |
+| **Actual Phishing**| 100 (FN)       | 1050 (TP)          |
+
+### Interpretation
+
+- The model achieves **high accuracy and strong ROC-AUC**, indicating excellent classification performance.  
+- The **low false positive rate (1.23%)** ensures minimal impact on legitimate emails.  
+- The model effectively detects phishing emails with high precision and recall.
 # 🔍 Detection Capabilities
 
 ## URL Detection
